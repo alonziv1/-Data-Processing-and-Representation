@@ -2,15 +2,19 @@ from subprocess import NORMAL_PRIORITY_CLASS
 import matplotlib.pyplot as plt
 from scipy.linalg import hadamard
 import numpy as np
-import math 
-
+import cmath 
+import cmath
+from scipy.linalg import dft
 
 class Base:
 
     def __init__(self,n , a, b):
 
-        self.size = 2**n
-        self.scaling_factor = (math.sqrt(self.size))
+        if self.name == 'Fourier':
+            self.size = n
+        else:
+            self.size = 2**n
+        self.scaling_factor = (cmath.sqrt(self.size))
         self.scaling_factors = np.full(self.size,self.scaling_factor)
         self.a = a 
         self.b = b
@@ -45,7 +49,8 @@ class Base:
 
         norms = []
         for row in self.matrix:
-            norms.append(math.sqrt(sum([e**2 for e in row])))
+
+            norms.append(cmath.sqrt(sum([abs(e)**2 for e in row])))
         print("norms are:", norms)
     
 
@@ -54,9 +59,11 @@ class Base:
 class Hadamard(Base):
 
     def __init__(self,n,a,b):
-
+        
+        self.name = "Hadamard"
         super().__init__(n,a,b)
-        self.matrix = 1/(math.sqrt(self.size)) *self.__hadamard_matrix(n)
+        self
+        self.matrix = 1/(cmath.sqrt(self.size)) *self.__hadamard_matrix(n)
 
 
     def __hadamard_matrix (self, n):
@@ -74,6 +81,7 @@ class Walsh_Hadamard(Hadamard):
     def __init__(self, n,a,b):
 
         super().__init__(n,a,b)
+        self.name = 'Walsh Hadamard'
         self.matrix = sorted(self.matrix,  key=self.__changesCounter)
 
         
@@ -88,6 +96,7 @@ class Walsh_Hadamard(Hadamard):
 class Haar(Base):
 
     def __init__(self,n,a,b):
+        self.name = 'Haar'
         super().__init__(n,a,b)
         self.matrix = self.__haar_matrix(n)
         self.scaling_factors = self.__scaling_factors(n)
@@ -101,7 +110,7 @@ class Haar(Base):
         H_n = 1
 
         for i in range(n):
-            H_n = (1/math.sqrt(2))*(np.append(np.kron(H_n,top),np.kron(np.identity(size), bottom)))
+            H_n = (1/cmath.sqrt(2))*(np.append(np.kron(H_n,top),np.kron(np.identity(size), bottom)))
             size *= 2
             H_n = np.reshape(H_n, newshape = (size,size))
 
@@ -109,7 +118,7 @@ class Haar(Base):
 
     def __scaling_factors(self,n):
 
-        root_2 = math.sqrt(2)
+        root_2 = cmath.sqrt(2)
         scaling_factors = [root_2, root_2]
         for i in range(1,n):
             scaling_factors.extend(np.ones(2**i))
@@ -118,5 +127,37 @@ class Haar(Base):
         return scaling_factors
 
 
-        
-  
+class Fourier(Base):
+
+    def __init__(self,n,a,b):
+        self.name = 'Fourier'
+        super().__init__(n,a,b)
+        self.matrix = self.__DFT()
+
+    def raiseToPower(self,array):
+        powers  = np.arange(self.size)
+        array = [base**power for base,power in zip(array, powers)]
+        return array
+
+
+
+
+    def __DFT(self):
+
+        w = cmath.exp((-2j*cmath.pi)/self.size)
+        matrix = np.full(self.size, fill_value= w )
+        matrix = self.raiseToPower(matrix)
+        matrix = [np.full(self.size, fill_value= base) for base in matrix]
+        matrix = np.array([self.raiseToPower(row) for row in matrix])
+
+        return matrix *  (1/(cmath.sqrt(self.size)))
+
+
+"""my_dft  = Fourier(273,0,1)
+auto_dft = dft(273,scale = 'sqrtn')
+
+diff = np.ravel((my_dft.matrix -  auto_dft ))
+diff = [abs(e) for e in diff]
+
+print(max(diff))
+"""

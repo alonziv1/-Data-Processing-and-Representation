@@ -19,8 +19,8 @@ def multipleGraphs(X_values, Y_values, number_of_functions, Title, start, end):
                 if graph_counter == number_of_functions:
                     break
 
-                axis[row, col].plot(X_values[start:end], Y_values[graph_counter][start:end], color='b',drawstyle='steps-post' )
-                # axis[row, col].set_title(Title +': ha_%d' %graph_counter)
+                axis[row, col].plot(X_values[start:end], Y_values[graph_counter][start:end], color='b' )
+                axis[row, col].set_title(Title +': ha_%d' %graph_counter)
                 graph_counter +=1
             
     
@@ -28,7 +28,7 @@ def multipleGraphs(X_values, Y_values, number_of_functions, Title, start, end):
 
 def SingleGraph(X_values, Y_values, Title, start, end,MSE):
 
-    plt.plot(X_values[start:end], Y_values[start:end], color='g',drawstyle='steps-post', label = Title  ) 
+    plt.plot(X_values[start:end], Y_values[start:end], color='g', label = Title  ) 
     plt.title(Title+", MSE is " +'{0:.3g}'.format(MSE))   
     plt.show()
 

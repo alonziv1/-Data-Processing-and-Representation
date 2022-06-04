@@ -8,8 +8,8 @@ from representations import representation
 import functions 
 
 
-a = -4
-b= 5
+a = 0
+b= 1
 intervals = 2**6
 step = 1/intervals
 x_values = arange(start=a, stop=b+step, step=step)
@@ -26,14 +26,14 @@ for base, name in zip(bases, names):
 
     #display the base's functions
     values = base.h_values(x_values)
-    plot_aux.multipleGraphs(x_values, values, number_of_functions= base.size,Title= name, start= start, end= end)
+    # plot_aux.multipleGraphs(x_values, values, number_of_functions= base.size,Title= name, start= start, end= end)
 
     #display aproximation for the function in each base 
-    current_representation = representation(functions.constant_f_x, base, a, b)
+    current_representation = representation(functions.vector, base, a, b)
     represented_values = current_representation.all_values( x_values)
     plot_aux.SingleGraph(x_values, represented_values,Title= name + " representation", start= start, end= end, MSE = current_representation.optimalMSE())
 
-    #display the best k-term aproximtaion, k = 0,1,2,3
+    """#display the best k-term aproximtaion, k = 0,1,2,3
 
     size_1 = [[0],[1],[2],[3]]
     size_2 = [[0,1],[0,2],[0,3],[1,2],[1,3]]
@@ -53,7 +53,7 @@ for base, name in zip(bases, names):
         plot_aux.plotMulty(x_values,original_values , current_values,MSE_list, name, size)
     
 
-    
+    """
 
 
 
